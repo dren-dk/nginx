@@ -288,6 +288,9 @@ static ngx_http_variable_t  ngx_http_ssl_vars[] = {
     { ngx_string("ssl_client_cert"), NULL, ngx_http_ssl_variable,
       (uintptr_t) ngx_ssl_get_certificate, NGX_HTTP_VAR_CHANGEABLE, 0 },
 
+    { ngx_string("ssl_client_bare_cert"), NULL, ngx_http_ssl_variable,
+      (uintptr_t) ngx_ssl_get_bare_certificate, NGX_HTTP_VAR_CHANGEABLE, 0 },
+
     { ngx_string("ssl_client_raw_cert"), NULL, ngx_http_ssl_variable,
       (uintptr_t) ngx_ssl_get_raw_certificate,
       NGX_HTTP_VAR_CHANGEABLE, 0 },

@@ -3434,6 +3434,42 @@ ngx_ssl_get_certificate(ngx_connection_t *c, ngx_pool_t *pool, ngx_str_t *s)
     return NGX_OK;
 }
 
+ngx_int_t
+ngx_ssl_get_bare_certificate(ngx_connection_t *c, ngx_pool_t *pool, ngx_str_t *s)
+{
+    size_t       len;
+    ngx_uint_t   i;
+    ngx_str_t    cert;
+
+    if (ngx_ssl_get_raw_certificate(c, pool, &cert) != NGX_OK) {
+        return NGX_ERROR;
+    }
+
+    if (cert.len == 0) {
+        s->len = 0;
+        return NGX_OK;
+    }
+
+	// The stripped certificate is never going to be bigger than the input.
+	// but it's not going to be a whole lot longer, so we'll just allocate the same number of bytes.
+    s->data = ngx_pnalloc(pool, cert.len); 
+    if (s->data == NULL) {
+        return NGX_ERROR;
+    }
+
+	len = 0;
+    for (i = 0; i < cert.len - 1; i++) {
+	    u_char ch = cert.data[i];
+        if (ch != LF) {
+			s->data[len++] = ch;
+        }
+    }
+
+    s->len = len;
+
+    return NGX_OK;
+}
+
 
 ngx_int_t
 ngx_ssl_get_subject_dn(ngx_connection_t *c, ngx_pool_t *pool, ngx_str_t *s)
